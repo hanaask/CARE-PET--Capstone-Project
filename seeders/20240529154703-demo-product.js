@@ -17,18 +17,27 @@ module.exports = {
       [
         {
           id: "7j8k9l0m-1234-5def-6789-0abcdef12345",
+          photo: "Flea Collar.jpg",
           name: "Flea Collar",
-          description: "A collar that repels fleas for up to 8 months.",
+          category: "Flea Collar",
+          price: "70000",
+          linkStore: "https://tokopedia.com",
         },
         {
           id: "8k9l0m1n-2345-6efg-7890-1abcdef23456",
+          photo: "Medicated Shampoo.jpg",
           name: "Medicated Shampoo",
-          description: "Shampoo to treat and prevent skin infections.",
+          category: "Medicated Shampoo",
+          price: "50000",
+          linkStore: "https://tokopedia.com",
         },
         {
           id: "9l0m1n2o-3456-7fgh-8901-2abcdef34567",
+          photo: "Anti-Itch Spray.jpg",
           name: "Anti-Itch Spray",
-          description: "Spray to relieve itching and soothe irritated skin.",
+          category: "Anti-Itch Spray",
+          price: "30000",
+          linkStore: "https://tokopedia.com",
         },
       ],
       {}
