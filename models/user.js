@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const bcrypt = require("bcrypt");
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -12,8 +13,11 @@ module.exports = (sequelize, DataTypes) => {
       User.belongsToMany(models.Dog, {
         through: "UserDog",
         foreignKey: "userId",
-        as: "dogs",
       });
+    }
+
+    async validPassword(password) {
+      return await bcrypt.compare(password, this.password);
     }
   }
   User.init(
@@ -24,13 +28,40 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
       },
       photo: DataTypes.STRING,
-      username: DataTypes.STRING,
-      email: DataTypes.STRING,
-      password: DataTypes.STRING,
+      username: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      role: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
     },
     {
       sequelize,
       modelName: "User",
+      hooks: {
+        beforeCreate: async (user, options) => {
+          if (user.password) {
+            const salt = await bcrypt.genSalt(10);
+            user.password = await bcrypt.hash(user.password, salt);
+          }
+        },
+        beforeUpdate: async (user, options) => {
+          if (user.password) {
+            const salt = await bcrypt.genSalt(10);
+            user.password = await bcrypt.hash(user.password, salt);
+          }
+        },
+      },
     }
   );
   return User;

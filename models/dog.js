@@ -12,7 +12,6 @@ module.exports = (sequelize, DataTypes) => {
       Dog.belongsToMany(models.User, {
         through: "UserDog",
         foreignKey: "dogId",
-        as: "users",
       });
     }
   }
