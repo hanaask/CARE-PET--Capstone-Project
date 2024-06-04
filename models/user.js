@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
         through: "UserDog",
         foreignKey: "userId",
       });
+      User.belongsToMany(models.Article, {
+        through: "Bookmark",
+        foreignKey: "userId",
+      });
     }
 
     async validPassword(password) {

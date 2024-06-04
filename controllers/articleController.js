@@ -19,4 +19,19 @@ const getArticlesByCategory = async (request, h) => {
   }
 };
 
-module.exports = { getAllArticles, getArticlesByCategory };
+const createArticle = async (request, h) => {
+  try {
+    await articleService.createArticle(request.params.id);
+
+    return h
+      .response({
+        status: "success",
+        message: "Article added successfully!",
+      })
+      .code(201);
+  } catch (error) {
+    return h.response({ error: error.message }).code(500);
+  }
+};
+
+module.exports = { getAllArticles, getArticlesByCategory, createArticle };

@@ -46,4 +46,20 @@ const profile = async (request, h) => {
   }
 };
 
-module.exports = { register, login, profile };
+const updateUser = async (request, h) => {
+  try {
+    const userId = request.auth.credentials.id;
+    await userService.updateUser(userId, request.payload);
+
+    return h
+      .response({
+        status: "Success",
+        message: "User updated succesfully!",
+      })
+      .code(200);
+  } catch (error) {
+    return h.response({ error: error.message }).code(500);
+  }
+};
+
+module.exports = { register, login, profile, updateUser };

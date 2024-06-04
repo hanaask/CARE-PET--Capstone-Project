@@ -4,7 +4,10 @@ const {
   getAllDogs,
   getDogById,
   updateDog,
+  deleteDog,
 } = require("../controllers/dogController");
+const verifyRole = require("../module/roleAuth");
+const { dogUpdateSchema, dogCreateSchema } = require("../schemas/dogSchema");
 
 module.exports = [
   {
@@ -16,7 +19,11 @@ module.exports = [
         allow: ["application/json", "multipart/form-data"],
         multipart: true,
       },
+      validate: {
+        payload: dogCreateSchema,
+      },
       auth: "jwt",
+      pre: [{ method: verifyRole("canCreateOwnData") }],
     },
   },
   {
@@ -25,6 +32,7 @@ module.exports = [
     handler: getAllDogs,
     options: {
       auth: "jwt",
+      pre: [{ method: verifyRole("canAccessOwnData") }],
     },
   },
   {
@@ -33,6 +41,7 @@ module.exports = [
     handler: getDogById,
     options: {
       auth: "jwt",
+      pre: [{ method: verifyRole("canAccessOwnData") }],
     },
   },
   {
@@ -44,7 +53,20 @@ module.exports = [
         allow: ["application/json", "multipart/form-data"],
         multipart: true,
       },
+      validate: {
+        payload: dogUpdateSchema,
+      },
       auth: "jwt",
+      pre: [{ method: verifyRole("canUpdateOwnData") }],
+    },
+  },
+  {
+    method: "DELETE",
+    path: "/dog/{dogId}",
+    handler: deleteDog,
+    options: {
+      auth: "jwt",
+      pre: [{ method: verifyRole("canDeleteOwnData") }],
     },
   },
 ];

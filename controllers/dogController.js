@@ -37,15 +37,12 @@ const getDogById = async (request, h) => {
 };
 const updateDog = async (request, h) => {
   try {
-    const dog = await dogService.updateDog(
-      request.params.dogId,
-      request.payload
-    );
+    const userId = request.auth.credentials.id;
+    await dogService.updateDog(userId, request.params.dogId, request.payload);
     return h
       .response({
         status: "success",
         message: "Dog updated successfully!",
-        data: dog,
       })
       .code(201);
   } catch (error) {
@@ -53,4 +50,19 @@ const updateDog = async (request, h) => {
   }
 };
 
-module.exports = { addDog, getAllDogs, getDogById, updateDog };
+const deleteDog = async (request, h) => {
+  try {
+    const userId = request.auth.credentials.id;
+    await dogService.deleteDog(userId, request.params.dogId);
+    return h
+      .response({
+        status: "success",
+        message: "Dog deleted successfully!",
+      })
+      .code(201);
+  } catch (error) {
+    return h.response({ error: error.message }).code(500);
+  }
+};
+
+module.exports = { addDog, getAllDogs, getDogById, updateDog, deleteDog };

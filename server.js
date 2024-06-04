@@ -3,10 +3,21 @@
 const Hapi = require("@hapi/hapi");
 const routes = require("./routes");
 const { jwtSecret } = require("./config/jwtConfig");
+const { User } = require("./models");
+const Boom = require("boom");
 
 const validate = async function (decoded, request, h) {
   // Lakukan validasi token di sini (misalnya memeriksa di database)
-  return { isValid: true, credentials: decoded };
+  const user = await User.findByPk(decoded.id);
+  if (!user) {
+    throw Boom.unauthorized("Invalid credentials");
+  }
+
+  // Simpan informasi pengguna yang validasi dalam `credentials`
+  return {
+    isValid: true,
+    credentials: { id: user.id, username: user.username, role: user.role },
+  };
 };
 
 const init = async () => {

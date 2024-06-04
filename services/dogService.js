@@ -1,3 +1,4 @@
+const Boom = require("boom");
 const { Dog, UserDog, User } = require("../models");
 
 const addDog = async (payload, userId) => {
@@ -40,39 +41,71 @@ const getAllDogs = async (userId) => {
 
 const getDogById = async (userId, dogId) => {
   try {
-    const user = await User.findByPk(userId, {
-      include: {
-        model: Dog,
-        where: {
-          id: dogId,
-        },
+    const userDog = await UserDog.findOne({
+      where: {
+        userId: userId,
+        dogId: dogId,
       },
     });
-    return user.Dogs[0];
-  } catch (error) {
-    throw error;
-  }
-};
 
-const updateDog = async (dogId, payload) => {
-  try {
-    const dog = await Dog.findByPk(dogId);
-
-    if (!dog) {
-      throw new Error("Dog not found");
+    if (!userDog) {
+      throw Boom.unauthorized("You are not authorized to see this dog");
     }
 
-    const updatedDog = {
-      ...dog,
-      ...payload,
-    };
-
-    await dog.update(updatedDog);
-
+    const dog = await Dog.findByPk(dogId);
     return dog;
   } catch (error) {
     throw error;
   }
 };
 
-module.exports = { addDog, getAllDogs, getDogById, updateDog };
+const updateDog = async (userId, dogId, payload) => {
+  try {
+    const userDog = await UserDog.findOne({
+      where: {
+        userId: userId,
+        dogId: dogId,
+      },
+    });
+
+    if (!userDog) {
+      throw Boom.unauthorized("You are not authorized to update this dog");
+    }
+
+    await Dog.update(
+      { ...payload },
+      {
+        where: {
+          id: dogId,
+        },
+      }
+    );
+  } catch (error) {
+    throw error;
+  }
+};
+
+const deleteDog = async (userId, dogId) => {
+  try {
+    const userDog = await UserDog.findOne({
+      where: {
+        userId: userId,
+        dogId: dogId,
+      },
+    });
+
+    if (!userDog) {
+      throw Boom.unauthorized("You are not authorized to delete this dog");
+    }
+
+    await Dog.destroy({
+      where: {
+        id: dogId,
+      },
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = { addDog, getAllDogs, getDogById, updateDog, deleteDog };

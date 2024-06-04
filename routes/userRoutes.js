@@ -2,9 +2,13 @@ const {
   register,
   profile,
   login,
-  validate,
+  updateUser,
 } = require("../controllers/userController");
-const Joi = require("@hapi/joi");
+const {
+  userUpdateSchema,
+  userLoginSchema,
+  userCreateSchema,
+} = require("../schemas/userSchema");
 
 module.exports = [
   {
@@ -18,12 +22,7 @@ module.exports = [
       },
       auth: false, // Tidak memerlukan autentikasi JWT untuk registrasi
       validate: {
-        payload: Joi.object({
-          photo: Joi.string(),
-          username: Joi.string().required(),
-          email: Joi.string().email().required(),
-          password: Joi.string().required(),
-        }),
+        payload: userCreateSchema,
       },
     },
   },
@@ -38,10 +37,7 @@ module.exports = [
       },
       auth: false, // Tidak memerlukan autentikasi JWT untuk login
       validate: {
-        payload: Joi.object({
-          username: Joi.string().required(),
-          password: Joi.string().required(),
-        }),
+        payload: userLoginSchema,
       },
     },
   },
@@ -50,5 +46,20 @@ module.exports = [
     path: "/profile",
     handler: profile,
     options: { auth: "jwt" },
+  },
+  {
+    method: "PUT",
+    path: "/profile",
+    handler: updateUser,
+    options: {
+      payload: {
+        allow: ["application/json", "multipart/form-data"],
+        multipart: true,
+      },
+      auth: "jwt",
+      validate: {
+        payload: userUpdateSchema,
+      },
+    },
   },
 ];
