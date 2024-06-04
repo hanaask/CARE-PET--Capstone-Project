@@ -16,6 +16,8 @@ const permissions = {
   [roles.ADMIN]: {
     canAccessAllData: true,
     canUpdateAllData: true,
+    canDeleteAllData: true,
+    canCreateAllData: true,
   },
 };
 

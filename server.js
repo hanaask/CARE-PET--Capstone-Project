@@ -5,6 +5,7 @@ const routes = require("./routes");
 const { jwtSecret } = require("./config/jwtConfig");
 const { User } = require("./models");
 const Boom = require("boom");
+require("dotenv").config();
 
 const validate = async function (decoded, request, h) {
   // Lakukan validasi token di sini (misalnya memeriksa di database)

@@ -15,13 +15,66 @@ const getDiseasesByCategory = async (request, h) => {
       request.params.category
     );
     return h.response(diseases).code(200);
-  } catch (error) {}
+  } catch (error) {
+    throw error;
+  }
 };
+
 const getDiseaseById = async (request, h) => {
   try {
     const disease = await diseaseService.getDiseaseById(request.params.id);
     return h.response(disease).code(200);
-  } catch (error) {}
+  } catch (error) {
+    throw error;
+  }
 };
 
-module.exports = { getAllDiseases, getDiseaseById, getDiseasesByCategory };
+const createDisease = async (request, h) => {
+  try {
+    await diseaseService.createDisease(request.payload);
+
+    return h
+      .response({
+        status: "success",
+        message: "Disease added successfully!",
+      })
+      .code(201);
+  } catch (error) {
+    return h.response({ error: error.message }).code(500);
+  }
+};
+const updateDisease = async (request, h) => {
+  try {
+    await diseaseService.updateDisease(request.params.id, request.payload);
+    return h
+      .response({
+        status: "success",
+        message: "Disease update successfully!",
+      })
+      .code(201);
+  } catch (error) {
+    return h.response({ error: error.message }).code(500);
+  }
+};
+const deleteDisease = async (request, h) => {
+  try {
+    await diseaseService.deleteDisease(request.params.id);
+    return h
+      .response({
+        status: "success",
+        message: "Disease delete successfully!",
+      })
+      .code(201);
+  } catch (error) {
+    return h.response({ error: error.message }).code(500);
+  }
+};
+
+module.exports = {
+  getAllDiseases,
+  getDiseaseById,
+  getDiseasesByCategory,
+  createDisease,
+  updateDisease,
+  deleteDisease,
+};

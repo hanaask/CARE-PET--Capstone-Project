@@ -3,6 +3,7 @@ const {
   profile,
   login,
   updateUser,
+  logout,
 } = require("../controllers/userController");
 const {
   userUpdateSchema,
@@ -39,6 +40,14 @@ module.exports = [
       validate: {
         payload: userLoginSchema,
       },
+    },
+  },
+  {
+    method: "POST",
+    path: "/logout",
+    handler: logout,
+    options: {
+      auth: "jwt",
     },
   },
   {

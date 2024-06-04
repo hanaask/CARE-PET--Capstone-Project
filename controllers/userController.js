@@ -30,7 +30,27 @@ const login = async (request, h) => {
       jwtSecret,
       { algorithm: "HS256", expiresIn: "5h" }
     );
-    return h.response({ token: "Bearer " + token }).code(200);
+    return h
+      .response({ message: "Login successful" })
+      .state("token", token, {
+        httpOnly: true, // cookie is not accessible to JavaScript
+        secure: false, // Set to true in production
+        sameSite: "Strict", // Adjust as needed for your use case
+      })
+      .code(200);
+  } catch (error) {
+    return h.response({ error: error.message }).code(500);
+  }
+};
+
+const logout = async (request, h) => {
+  try {
+    return h
+      .response({ message: "Logout successful" })
+      .unstate("token", {
+        path: "/",
+      })
+      .code(200);
   } catch (error) {
     return h.response({ error: error.message }).code(500);
   }
@@ -62,4 +82,4 @@ const updateUser = async (request, h) => {
   }
 };
 
-module.exports = { register, login, profile, updateUser };
+module.exports = { register, login, profile, updateUser, logout };

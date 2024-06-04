@@ -18,6 +18,17 @@ const getArticlesByCategory = async (category) => {
     throw error;
   }
 };
+const getArticleById = async (articleId) => {
+  try {
+    const article = await Article.findByPk(articleId);
+    if (!article) {
+      throw Boom.notFound("Article not found");
+    }
+    return articles;
+  } catch (error) {
+    throw error;
+  }
+};
 
 const createArticle = async (payload) => {
   try {
@@ -60,4 +71,5 @@ module.exports = {
   updateArticle,
   createArticle,
   deleteArticle,
+  getArticleById,
 };
