@@ -34,7 +34,7 @@ const login = async (request, h) => {
       .response({ message: "Login successful" })
       .state("token", token, {
         httpOnly: true, // cookie is not accessible to JavaScript
-        secure: false, // Set to true in production
+        secure: process.env.NODE_ENV === "production", // Set to true in production
         sameSite: "Strict", // Adjust as needed for your use case
       })
       .code(200);
